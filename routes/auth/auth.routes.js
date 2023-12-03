@@ -1,12 +1,11 @@
 const router = require("express").Router();
-const User = require("../models/User.model");
+const User = require("../../models/User.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const isTokenValid = require("../middlewares/auth.middlewares");
+const isTokenValid = require("../../middlewares/auth.middlewares");
 
 // POST "/api/auth/singup" => recibir data del usuario y lo crea en la DB
 router.post("/signup", async (req, res, next) => {
-  
   const { username, email, password } = req.body;
   // validaciones:
   if (!username || !email || !password) {
@@ -27,7 +26,6 @@ router.post("/signup", async (req, res, next) => {
 
     const salt = await bcrypt.genSalt(12);
     const hashPassword = await bcrypt.hash(password, salt);
-    
 
     await User.create({
       username,
@@ -42,7 +40,6 @@ router.post("/signup", async (req, res, next) => {
 
 // POST "/api/auth/login" => recibir credenciales del usuario y validarlo
 router.post("/login", async (req, res, next) => {
-  console.log(req.body);
   const { email, password } = req.body;
   if (!email || !password) {
     res
@@ -52,7 +49,7 @@ router.post("/login", async (req, res, next) => {
   }
   try {
     const foundUser = await User.findOne({ email: email });
-    
+
     if (!foundUser) {
       res.status(400).json({ errorMessage: "usuario no registrado" });
       return;

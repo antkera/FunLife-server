@@ -1,9 +1,16 @@
 const { Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
-    username: String,
+    funs: [{ type: Schema.Types.ObjectId, ref: "fun" }],
+    username: {
+      type: String,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      trim: true,
+    },
     email: {
       type: String,
       required: [true, "Email is required."],
@@ -11,13 +18,27 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    friends: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    commentaries: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Commentary",
+      },
+    ],
     password: {
       type: String,
       required: [true, "Password is required."],
+      //---//
+      sentMessages: [String],
+      messages: [String],
     },
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
