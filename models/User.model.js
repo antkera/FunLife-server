@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema(
   {
-    funs: [{ type: Schema.Types.ObjectId, ref: "fun" }],
+    funs: [{ type: Schema.Types.ObjectId, ref: "Fun" }],
     username: {
       type: String,
       trim: true,

@@ -24,13 +24,11 @@ const funSchema = new Schema(
     },
     mainImg: {
       type: String,
-      unique: true,
       trim: true,
     },
     images: [
       {
         type: String,
-        unique: true,
         trim: true,
       },
     ],
@@ -38,10 +36,12 @@ const funSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    comentarios: {
-      type: Schema.Types.ObjectId,
-      ref: "Commentary",
-    },
+    comentarios: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Commentary",
+      },
+    ],
   },
   {
     timestamps: true,

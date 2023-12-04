@@ -7,23 +7,24 @@ const invitationSchema = new Schema(
       ref: "User",
       required: [true, "Inviter is required."],
     },
-    guests: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    invitee: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
 
     fun: {
       type: Schema.Types.ObjectId,
       ref: "Fun",
-      required: [true, "Fun is required."],
     },
     isFresh: {
       type: Boolean,
       default: true,
     },
     message: String,
+    category: {
+      type: String,
+      enum: ["friendship", "fun"],
+    },
   },
   {
     timestamps: true,
