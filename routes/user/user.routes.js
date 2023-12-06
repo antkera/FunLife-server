@@ -1,7 +1,7 @@
 const FunCollection = require("../../models/FunColletion.model");
 const User = require("../../models/User.model");
-const Fun = require("../../models/fun.model");
-const Invitation = require("../../models/invitation.model");
+const Fun = require("../../models/Fun.model");
+const Invitation = require("../../models/Invitation.model");
 
 const router = require("express").Router();
 
@@ -66,7 +66,7 @@ router.get("/myFriends", async (req, res, next) => {
 router.post("/newFun", async (req, res, next) => {
   console.log(req.body);
   const { newFun, arrUsers } = req.body;
-  const { title, description, date, time, isPublic } = newFun;
+  const { title, description, date, time, isPublic, mainImg } = newFun;
   const { _id } = req.payload;
 
   try {
@@ -78,6 +78,7 @@ router.post("/newFun", async (req, res, next) => {
       date,
       time,
       isPublic,
+      mainImg,
       collection: respFunColl._id,
       creator: _id,
     };
@@ -98,6 +99,46 @@ router.post("/newFun", async (req, res, next) => {
   }
 });
 
+//! POST "/api/user/forkFun" => recibe unos datos de un formulario y CLONA UN FUN  y todo lo necesario  !!!! copiado para fork
+router.post("/forkFun", async (req, res, next) => {
+  const { forkFun, guestsArr } = req.body;
+  const { description, date, time, isPublic, mainImg, collection } = forkFun;
+  const { _id } = req.payload;
+
+  try {
+    const fun = {
+      description,
+      date,
+      time,
+      isPublic,
+      mainImg,
+      collection,
+      creator: _id,
+    };
+
+    const respFun = await Fun.create(fun);
+    await FunCollection.findByIdAndUpdate(collection, {
+      $push: { funs: respFun._id },
+    });
+    console.log("collection", collection);
+
+    guestsArr.map(async (eachId) => {
+      const invitation = { inviter: _id, invitee: eachId, fun: respFun._id };
+      try {
+        await Invitation.create(invitation);
+        await User.findByIdAndUpdate(_id, {
+          $push: { funs: respFun._id },
+        });
+      } catch (error) {
+        next(error);
+      }
+    });
+  } catch (error) {
+    console.log("aqui", error);
+    next(error);
+  }
+}); //!------------------------------------------------------
+
 // GET "/api/user/myFuns" => devulve un json con los datos de los funs del usuario.
 
 router.get("/myFuns", async (req, res, next) => {
@@ -113,6 +154,18 @@ router.get("/myFuns", async (req, res, next) => {
           model: "FunCollection",
         },
       });
+
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET "/api/user/publicFuns" => devulve un json con los datos de los funs publicos.
+
+router.get("/publicFuns", async (req, res, next) => {
+  try {
+    const response = await FunCollection.find().populate("funs");
 
     res.json(response);
   } catch (error) {

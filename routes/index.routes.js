@@ -11,4 +11,8 @@ router.use("/auth", authRoutes);
 const userRoutes = require("./user/user.routes");
 router.use("/user", isTokenValid, userRoutes);
 
+const uploadRoutes = require("./upload.routes");
+router.use("/upload", uploadRoutes);
+
+
 module.exports = router;
