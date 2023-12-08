@@ -8,11 +8,14 @@ router.get("/", (req, res, next) => {
 const authRoutes = require("./auth/auth.routes");
 router.use("/auth", authRoutes);
 
+const messageRoutes = require("./messages/message.routes");
+router.use("/messages", isTokenValid, messageRoutes);
+
 const userRoutes = require("./user/user.routes");
 router.use("/user", isTokenValid, userRoutes);
 
 const uploadRoutes = require("./upload.routes");
-router.use("/upload", uploadRoutes);
+router.use("/upload",isTokenValid, uploadRoutes);
 
 
 module.exports = router;
