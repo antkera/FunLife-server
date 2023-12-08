@@ -184,7 +184,15 @@ router.get("/myFuns", async (req, res, next) => {
 
 router.get("/publicFuns", async (req, res, next) => {
   try {
-    const response = await FunCollection.find().populate("funs");
+    const response = await FunCollection.find().populate({
+      path: 'funs',
+      match: { isPublic: true }});
+
+
+
+    
+
+
 
     res.json(response);
   } catch (error) {
